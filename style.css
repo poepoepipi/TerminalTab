@@ -1,0 +1,30 @@
+body {
+    margin: 0;
+    background: black;
+    color: #00ff00;
+    font-family: "Courier New", monospace;
+    font-size: 18px;
+    padding: 20px;
+}
+
+#terminal {
+    white-space: pre-wrap;
+}
+
+.prompt {
+    display: flex;
+}
+
+.prompt::before {
+    content: "user@website:~$ ";
+}
+
+input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #00ff00;
+    font-family: inherit;
+    font-size: inherit;
+    flex: 1;
+}
