@@ -35,6 +35,7 @@ bookmark - show, search, or edit bookmarks
 clear - Clear the terminal
 neofetch - Does the cool thingy
 about - Info about the project
+info - shows the info you gave in setup
 setup - plays setup sequence (removes old settings)`;
             terminal.appendChild(output);
             createPrompt();
@@ -61,14 +62,14 @@ setup - plays setup sequence (removes old settings)`;
             const output = document.createElement("div");
             output.innerHTML = `
         <pre>
-████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗  ████████╗ █████╗ ██████╗     user@terminaltab
+████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗  ████████╗ █████╗ ██████╗     ${name}@terminaltab
 ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║  ╚══██╔══╝██╔══██╗██╔══██╗    -------------
    ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║     ██║   ███████║██████╔╝    OS: TerminalTab
    ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║     ██║   ██╔══██║██╔══██╗    Host: New Tab
-   ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗██║   ██║  ██║██████╔╝    Shell: website-terminal 
-   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚═╝   ╚═╝  ╚═╝╚═════╝     Uptime: Since you opened this page
+   ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗██║   ██║  ██║██████╔╝    browser: ${browser}
+   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚═╝   ╚═╝  ╚═╝╚═════╝     search engine: ${searchEngine}
                                                                                            Language: HTML / CSS / JavaScript
-                                                                                           Status: idk
+                                                                                           Uptime: Since you opened this page
         </pre>
         `;
             terminal.appendChild(output);
@@ -85,6 +86,18 @@ setup - plays setup sequence (removes old settings)`;
             const output = document.createElement("div");
             output.innerHTML = `
         Search doesn't work yet.
+        `;
+            terminal.appendChild(output);
+            createPrompt();
+            return;
+        }
+
+        else if (command === "info") {
+            const output = document.createElement("div");
+            output.innerHTML = `
+name = ${name}
+Browser = ${browser}
+Search Engine = ${searchEngine}
         `;
             terminal.appendChild(output);
             createPrompt();
