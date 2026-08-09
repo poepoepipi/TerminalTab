@@ -278,6 +278,8 @@ async function bookmarkEdit() {
 
     if (!name || !url) {
         await ask("Bookmark name and URL cannot be empty.");
+        terminal.appendChild(output);
+        createPrompt();
         return;
     }
 
@@ -301,6 +303,8 @@ async function bookmarkList() {
 
     if (keys.length === 0) {
         await ask("You don't have any bookmarks.");
+        terminal.appendChild(output);
+        createPrompt();
         return;
     }
 
@@ -321,6 +325,8 @@ async function bookmarkUse() {
 
     if (keys.length === 0) {
         await ask("You don't have any bookmarks.");
+        terminal.appendChild(output);
+        createPrompt();
         return;
     }
 
@@ -336,6 +342,8 @@ async function bookmarkUse() {
 
     if (choice < 1 || choice > keys.length || !Number.isInteger(choice)) {
         await ask("Invalid bookmark.");
+        terminal.appendChild(output);
+        createPrompt();
         return;
     }
 
