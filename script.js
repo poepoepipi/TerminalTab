@@ -19,6 +19,15 @@ const searchUrls = {
     "Brave": "https://search.brave.com/search?q="
 };
 
+const browserNames = {
+    "1": "Google", "2": "Chrome", "3": "Safari", "4": "Firefox",
+    "5": "Edge", "6": "Brave", "7": "Opera", "8": "Internet Explorer", "9": "Other"
+};
+const searchEngineNames = {
+    "1": "Google", "2": "Bing", "3": "DuckDuckGo", "4": "Yahoo!",
+    "5": "Yandex", "6": "Baidu", "7": "Ecosia", "8": "Internet Archive", "9": "Brave"
+};
+
 
 // Commands
 function createPrompt() {
@@ -66,9 +75,7 @@ setup - plays setup sequence (removes old settings)`;
 
         else if (command === "about") {
             const output = document.createElement("div");
-            output.innerHTML = `
-        About The project
-        `;
+            output.innerHTML = `About The project`;
             terminal.appendChild(output);
             createPrompt();
             return;
@@ -99,7 +106,7 @@ setup - plays setup sequence (removes old settings)`;
         }
 
         else if (command === "search") {
-            search();
+            promptSearch();
             return;
         }
 
@@ -117,9 +124,7 @@ Search Engine = ${searchEngine}
 
         else if (command === "bookmark") {
             const output = document.createElement("div");
-            output.innerHTML = `
-        Bookmarks don't work yet.
-        `;
+            output.innerHTML = `Bookmarks don't work yet.`;
             terminal.appendChild(output);
             createPrompt();
             return;
@@ -139,17 +144,47 @@ Search Engine = ${searchEngine}
 
 createPrompt();
 
+function ask(question) {
+    return new Promise((resolve) => {
+        const prompt = document.createElement("div");
+        prompt.className = "prompt";
+
+        if (question) {
+            const label = document.createElement("div");
+            label.textContent = question;
+            label.style.whiteSpace = "pre-line";
+            prompt.appendChild(label);
+        }
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.autofocus = true;
+        prompt.appendChild(input);
+        terminal.appendChild(prompt);
+        input.focus();
+
+        input.addEventListener("keydown", function handler(event) {
+            if (event.key !== "Enter") return;
+            const value = input.value.trim();
+            input.disabled = true;
+            input.removeEventListener("keydown", handler);
+            resolve(value);
+        });
+    });
+}
+
 
 // Other functions
 async function setup() {
 
     // Question 1
-    name = await createPrompt("What is your name?");
+    name = await ask("What is your name?");
     localStorage.setItem("name", name);
+    document.documentElement.style.setProperty("--username", `"${name}"`);
 
     // Question 2
     while (true) {
-        const answer = await createPrompt(
+        const answer = await ask(
             "Which Browser do you use? (answer with the number of the Browser)\n" +
             "1. Google\n" +
             "2. Chrome\n" +
@@ -162,50 +197,18 @@ async function setup() {
             "9. Other"
         );
 
-        if (answer === "1") {
-            browser = "Google";
-            localStorage.setItem("browser", browser);
-            break;
-        } else if (answer === "2") {
-            browser = "Bing";
-            localStorage.setItem("browser", browser);
-            break;
-        } else if (answer === "3") {
-            browser = "DuckDuckGo";
-            localStorage.setItem("browser", browser);
-            break;
-        } else if (answer === "4") {
-            browser = "Yahoo!";
-            localStorage.setItem("browser", browser);
-            break;
-        } else if (answer === "5") {
-            browser = "Yandex";
-            localStorage.setItem("browser", browser);
-            break;
-        } else if (answer === "6") {
-            browser = "Baidu";
-            localStorage.setItem("browser", browser);
-            break;
-        } else if (answer === "7") {
-            browser = "Ecosia";
-            localStorage.setItem("browser", browser);
-            break;
-        } else if (answer === "8") {
-            browser = "Internet Archive";
-            localStorage.setItem("browser", browser);
-            break;
-        } else if (answer === "9") {
-            browser = "Brave";
+        if (browserNames[answer]) {
+            browser = browserNames[answer];
             localStorage.setItem("browser", browser);
             break;
         } else {
-            await createPrompt("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, 7, 8, or 9.");
+            await ask("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, 7, 8, or 9.");
         }
     }
 
     // Question 3
     while (true) {
-        const answer = await createPrompt(
+        const answer = await ask(
             "Which search engine do you want to use? (answer with the number of the search engine)\n" +
             "1. Google\n" +
             "2. Bing\n" +
@@ -218,58 +221,28 @@ async function setup() {
             "9. Brave"
         );
 
-        if (answer === "1") {
-            searchEngine = "Google";
-            localStorage.setItem("searchEngine", searchEngine);
-            break;
-        } else if (answer === "2") {
-            searchEngine = "Bing";
-            localStorage.setItem("searchEngine", searchEngine);
-            break;
-        } else if (answer === "3") {
-            searchEngine = "DuckDuckGo";
-            localStorage.setItem("searchEngine", searchEngine);
-            break;
-        } else if (answer === "4") {
-            searchEngine = "Yahoo!";
-            localStorage.setItem("searchEngine", searchEngine);
-            break;
-        } else if (answer === "5") {
-            searchEngine = "Yandex";
-            localStorage.setItem("searchEngine", searchEngine);
-            break;
-        } else if (answer === "6") {
-            searchEngine = "Baidu";
-            localStorage.setItem("searchEngine", searchEngine);
-            break;
-        } else if (answer === "7") {
-            searchEngine = "Ecosia";
-            localStorage.setItem("searchEngine", searchEngine);
-            break;
-        } else if (answer === "8") {
-            searchEngine = "Internet Archive";
-            localStorage.setItem("searchEngine", searchEngine);
-            break;
-        } else if (answer === "9") {
-            searchEngine = "Brave";
+        if (searchEngineNames[answer]) {
+            searchEngine = searchEngineNames[answer];
             localStorage.setItem("searchEngine", searchEngine);
             break;
         } else {
-            await createPrompt("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, 7, 8, or 9.");
+            await ask("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, 7, 8, or 9.");
         }
     }
 
     console.log(name);
     console.log(browser);
     console.log(searchEngine);
+
+    createPrompt();
 }
 
-async function search() {
-    searchQuery = await createPrompt("What do you want to search?:");
-    search(searchQuery)
+async function promptSearch() {
+    const query = await ask("What do you want to search?:");
+    performSearch(query);
 }
 
-function search(query) {
+function performSearch(query) {
     const baseUrl = searchUrls[searchEngine];
 
     if (!baseUrl) {
