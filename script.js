@@ -1,6 +1,8 @@
 // Variables
 const terminal = document.getElementById("terminal");
 
+const bookmarks = localStorage.getItem("bookmarks");
+
 let name = localStorage.getItem("name") || "user";
 let browser = localStorage.getItem("browser") || "Chrome";
 let searchEngine = localStorage.getItem("searchEngine") || "DuckDuckGo";
@@ -123,10 +125,7 @@ Search Engine = ${searchEngine}
         }
 
         else if (command === "bookmark") {
-            const output = document.createElement("div");
-            output.innerHTML = `Bookmarks don't work yet.`;
-            terminal.appendChild(output);
-            createPrompt();
+            bookmark();
             return;
         }
 
@@ -238,7 +237,7 @@ async function setup() {
 }
 
 async function promptSearch() {
-    const query = await ask("What do you want to search?:");
+    const query = await ask("What do you want to search?: ");
     performSearch(query);
 }
 
@@ -253,4 +252,94 @@ function performSearch(query) {
     const url = baseUrl + encodeURIComponent(query);
 
     window.location.href = url;
+}
+
+async function bookmark() {
+    const bookmarks = localStorage.getItem("bookmarks");
+    const bookmarkTask = await ask("Do you want to 'edit', 'list', or 'use' bookmarks? (type what's between brackets): ")
+    if (bookmarkTask === "edit") {
+        bookmarkEdit();
+        return;
+    }
+    else if (bookmarkTask === "list") {
+        bookmarkList();
+        return;
+    }
+    else if (bookmarkTask === "use") {
+        bookmarkUse();
+        return;
+    }
+}
+
+async function bookmarkEdit() {
+    const name = await ask("What should the bookmark be called? ");
+
+    const url = await ask("What is the URL? ");
+
+    if (!name || !url) {
+        await ask("Bookmark name and URL cannot be empty.");
+        return;
+    }
+
+    let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || {};
+
+    bookmarks[name] = {
+        name: name,
+        url: url
+    };
+
+    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+
+    await ask(`Bookmark "${name}" saved.`);
+}
+
+
+async function bookmarkList() {
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || {};
+
+    const keys = Object.keys(bookmarks);
+
+    if (keys.length === 0) {
+        await ask("You don't have any bookmarks.");
+        return;
+    }
+
+    let output = "Bookmarks:\n";
+
+    keys.forEach((key, index) => {
+        output += `${index + 1}. ${bookmarks[key].name} - ${bookmarks[key].url}\n`;
+    });
+
+    await ask(output);
+}
+
+
+async function bookmarkUse() {
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || {};
+
+    const keys = Object.keys(bookmarks);
+
+    if (keys.length === 0) {
+        await ask("You don't have any bookmarks.");
+        return;
+    }
+
+    let output = "Bookmarks:\n";
+
+    keys.forEach((key, index) => {
+        output += `${index + 1}. ${bookmarks[key].name}\n`;
+    });
+
+    const answer = await ask(output + "\nWhich bookmark do you want to use? ");
+
+    const choice = Number(answer);
+
+    if (choice < 1 || choice > keys.length || !Number.isInteger(choice)) {
+        await ask("Invalid bookmark.");
+        return;
+    }
+
+    const bookmark = bookmarks[keys[choice - 1]];
+
+    window.location.href = bookmark.url;
 }
