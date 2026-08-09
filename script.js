@@ -142,9 +142,6 @@ createPrompt();
 
 // Other functions
 async function setup() {
-    let name = localStorage.getItem("name") || "user";
-    let browser = localStorage.getItem("browser") || "Chrome";
-    let searchEngine = localStorage.getItem("searchEngine") || "DuckDuckGo";
 
     // Question 1
     name = await createPrompt("What is your name?");
