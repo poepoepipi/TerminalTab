@@ -16,7 +16,7 @@ body {
 }
 
 .prompt::before {
-    content: "user@website:~$ ";
+    content: var(--username) "@terminaltab:~$ ";
 }
 
 input {

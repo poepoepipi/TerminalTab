@@ -1,10 +1,26 @@
+// Variables
 const terminal = document.getElementById("terminal");
 
 let name = localStorage.getItem("name") || "user";
 let browser = localStorage.getItem("browser") || "Chrome";
 let searchEngine = localStorage.getItem("searchEngine") || "DuckDuckGo";
 
+document.documentElement.style.setProperty("--username", `"${name}"`);
 
+const searchUrls = {
+    "Google": "https://www.google.com/search?q=",
+    "Bing": "https://www.bing.com/search?q=",
+    "DuckDuckGo": "https://duckduckgo.com/?q=",
+    "Yahoo!": "https://search.yahoo.com/search?p=",
+    "Yandex": "https://yandex.com/search/?text=",
+    "Baidu": "https://www.baidu.com/s?wd=",
+    "Ecosia": "https://www.ecosia.org/search?q=",
+    "Internet Archive": "https://archive.org/search?query=",
+    "Brave": "https://search.brave.com/search?q="
+};
+
+
+// Commands
 function createPrompt() {
     const prompt = document.createElement("div");
     prompt.className = "prompt";
@@ -83,12 +99,7 @@ setup - plays setup sequence (removes old settings)`;
         }
 
         else if (command === "search") {
-            const output = document.createElement("div");
-            output.innerHTML = `
-        Search doesn't work yet.
-        `;
-            terminal.appendChild(output);
-            createPrompt();
+            search();
             return;
         }
 
@@ -128,6 +139,8 @@ Search Engine = ${searchEngine}
 
 createPrompt();
 
+
+// Other functions
 async function setup() {
     let name = localStorage.getItem("name") || "user";
     let browser = localStorage.getItem("browser") || "Chrome";
@@ -252,4 +265,22 @@ async function setup() {
     console.log(name);
     console.log(browser);
     console.log(searchEngine);
+}
+
+async function search() {
+    searchQuery = await createPrompt("What do you want to search?:");
+    search(searchQuery)
+}
+
+function search(query) {
+    const baseUrl = searchUrls[searchEngine];
+
+    if (!baseUrl) {
+        console.error("Unknown search engine:", searchEngine);
+        return;
+    }
+
+    const url = baseUrl + encodeURIComponent(query);
+
+    window.location.href = url;
 }
