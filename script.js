@@ -60,8 +60,9 @@ help - Show this menu
 search - search something on the internet
 bookmark - show, search, or edit bookmarks
 clear - Clear the terminal
-neofetch - Does the cool thingy
+fastcom - shows info about fast commands (shortcuts)
 about - Info about the project
+neofetch - Does the cool thingy
 info - shows the info you gave in setup
 setup - plays setup sequence (removes old settings)`;
             terminal.appendChild(output);
@@ -78,6 +79,18 @@ setup - plays setup sequence (removes old settings)`;
         else if (command === "about") {
             const output = document.createElement("div");
             output.innerHTML = `About The project`;
+            terminal.appendChild(output);
+            createPrompt();
+            return;
+        }
+
+        if (command === "fastcom") {
+            const output = document.createElement("div");
+            output.innerHTML =
+`Available commands:
+search --searchquery - searches immediatly
+bookmark --bookmarkName - open's the bookmark
+`;
             terminal.appendChild(output);
             createPrompt();
             return;
@@ -126,6 +139,49 @@ Search Engine = ${searchEngine}
 
         else if (command === "bookmark") {
             bookmark();
+            return;
+        }
+
+
+        else if (command.startsWith("search --")) {
+            const query = command.substring(9).trim();
+
+            if (!query) {
+                await ask("Please provide a search query.");
+                return;
+            }
+
+            const searchUrls = {
+                "Google": "https://www.google.com/search?q=",
+                "Bing": "https://www.bing.com/search?q=",
+                "DuckDuckGo": "https://duckduckgo.com/?q=",
+                "Yahoo!": "https://search.yahoo.com/search?p=",
+                "Yandex": "https://yandex.com/search/?text=",
+                "Baidu": "https://www.baidu.com/s?wd=",
+                "Ecosia": "https://www.ecosia.org/search?q=",
+                "Internet Archive": "https://archive.org/search?query=",
+                "Brave": "https://search.brave.com/search?q="
+            };
+
+            window.location.href =
+                searchUrls[searchEngine] + encodeURIComponent(query);
+
+            return;
+        }
+
+        else if (command.startsWith("bookmark --")) {
+            const bookmarkName = command.substring(11).trim();
+
+            const bookmarks =
+                JSON.parse(localStorage.getItem("bookmarks")) || {};
+
+            if (!bookmarks[bookmarkName]) {
+                await ask(`Bookmark "${bookmarkName}" doesn't exist.`);
+                return;
+            }
+
+            window.location.href = bookmarks[bookmarkName].url;
+
             return;
         }
 
@@ -256,7 +312,7 @@ function performSearch(query) {
 
 async function bookmark() {
     const bookmarks = localStorage.getItem("bookmarks");
-    const bookmarkTask = await ask("Do you want to 'edit', 'list', or 'use' bookmarks? (type what's between brackets): ")
+    const bookmarkTask = await ask("Do you want to 'edit', 'list', or 'open' bookmarks? (type what's between brackets): ")
     if (bookmarkTask === "edit") {
         bookmarkEdit();
         return;
@@ -265,7 +321,7 @@ async function bookmark() {
         bookmarkList();
         return;
     }
-    else if (bookmarkTask === "use") {
+    else if (bookmarkTask === "open") {
         bookmarkUse();
         return;
     }
