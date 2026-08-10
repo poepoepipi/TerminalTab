@@ -45,7 +45,7 @@ function createPrompt() {
 
     input.focus();
 
-    input.addEventListener("keydown", function (event) {
+    input.addEventListener("keydown", async function (event) {
         if (event.key !== "Enter") return;
 
         const command = input.value.trim().toLowerCase();
@@ -116,7 +116,7 @@ bookmark --bookmarkName - open's the bookmark
         }
 
         else if (command === "setup") {
-            setup();
+            await setup();
             return;
         }
 
