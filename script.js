@@ -121,7 +121,7 @@ bookmark --bookmarkName - open's the bookmark
         }
 
         else if (command === "search") {
-            promptSearch();
+            await promptSearch();
             return;
         }
 
@@ -138,7 +138,7 @@ Search Engine = ${searchEngine}
         }
 
         else if (command === "bookmark") {
-            bookmark();
+            await bookmark();
             return;
         }
 
@@ -147,7 +147,10 @@ Search Engine = ${searchEngine}
             const query = command.substring(9).trim();
 
             if (!query) {
-                await ask("Please provide a search query.");
+                const output = document.createElement("div");
+                output.innerHTML = `Please provide a search query.`;
+                terminal.appendChild(output);
+                createPrompt();
                 return;
             }
 
@@ -176,7 +179,10 @@ Search Engine = ${searchEngine}
                 JSON.parse(localStorage.getItem("bookmarks")) || {};
 
             if (!bookmarks[bookmarkName]) {
-                await ask(`Bookmark "${bookmarkName}" doesn't exist.`);
+                const output = document.createElement("div");
+                output.innerHTML = `Bookmark "${bookmarkName}" doesn't exist.`;
+                terminal.appendChild(output);
+                createPrompt();
                 return;
             }
 
@@ -302,6 +308,7 @@ function performSearch(query) {
 
     if (!baseUrl) {
         console.error("Unknown search engine:", searchEngine);
+        createPrompt();
         return;
     }
 
@@ -314,15 +321,15 @@ async function bookmark() {
     const bookmarks = localStorage.getItem("bookmarks");
     const bookmarkTask = await ask("Do you want to 'edit', 'list', or 'open' bookmarks? (type what's between brackets): ")
     if (bookmarkTask === "edit") {
-        bookmarkEdit();
+        await bookmarkEdit();
         return;
     }
     else if (bookmarkTask === "list") {
-        bookmarkList();
+        await bookmarkList();
         return;
     }
     else if (bookmarkTask === "open") {
-        bookmarkUse();
+        await bookmarkUse();
         return;
     }
 }
@@ -334,6 +341,8 @@ async function bookmarkEdit() {
 
     if (!name || !url) {
         await ask("Bookmark name and URL cannot be empty.");
+        const output = document.createElement("div");
+        output.innerHTML = `Bookmark name and URL cannot be empty.`;
         terminal.appendChild(output);
         createPrompt();
         return;
