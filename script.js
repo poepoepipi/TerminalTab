@@ -421,7 +421,7 @@ async function bookmarkDelete() {
         output += `${index + 1}. ${bookmarks[key].name}\n`;
     });
 
-    const answer = await ask(output + "\nWhich bookmark do you want to delete? ");
+    const answer = await ask(output + "\nWhich bookmark do you want to delete? (Type it's number)");
 
     const choice = Number(answer);
 
@@ -454,21 +454,19 @@ async function bookmarkUse() {
 
     let output = "Bookmarks:\n";
 
-    keys.forEach((key, index) => {
-        output += `${index + 1}. ${bookmarks[key].name}\n`;
+    keys.forEach((key) => {
+        output += `- ${bookmarks[key].name}\n`;
     });
 
     const answer = await ask(output + "\nWhich bookmark do you want to use? ");
 
-    const choice = Number(answer);
+    const bookmark = bookmarks[answer];
 
-    if (choice < 1 || choice > keys.length || !Number.isInteger(choice)) {
+    if (!bookmark) {
         await ask("Invalid bookmark.");
         createPrompt();
         return;
     }
-
-    const bookmark = bookmarks[keys[choice - 1]];
 
     window.location.href = bookmark.url;
 }
