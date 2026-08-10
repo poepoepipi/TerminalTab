@@ -8,6 +8,6 @@ TerminalTab is a free and open-source projects that let's you search the interne
 
 
 ## Statistics
-
+![Time spent](https://hackatime.hackclub.com/api/v1/badge/U0A1VEB9U1F/poepoepipi/TerminalTab)
 
 ## Devlogs
