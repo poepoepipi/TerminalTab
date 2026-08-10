@@ -1,5 +1,8 @@
 // Variables
 const terminal = document.getElementById("terminal");
+new MutationObserver(() => {
+    terminal.scrollTop = terminal.scrollHeight;
+}).observe(terminal, { childList: true, subtree: true });
 
 const bookmarks = localStorage.getItem("bookmarks");
 
@@ -78,7 +81,16 @@ setup - plays setup sequence (removes old settings)`;
 
         else if (command === "about") {
             const output = document.createElement("div");
-            output.innerHTML = `About The project`;
+            output.innerHTML = 
+`TerminalTab is a free and open-source projects that let's you search the internet, manage bookmarks, and more,
+all from a terminal-like interface in your browser, 
+providing a unique user experience for those who enjoy using command-line interfaces.
+
+To learn more about the project, visit the GitHub repository and read the README.md
+
+Project by: poepoepipi (on github)
+website: https://poepoepipi.github.io
+`;
             terminal.appendChild(output);
             createPrompt();
             return;
@@ -319,13 +331,17 @@ function performSearch(query) {
 
 async function bookmark() {
     const bookmarks = localStorage.getItem("bookmarks");
-    const bookmarkTask = await ask("Do you want to 'edit', 'list', or 'open' bookmarks? (type what's between brackets): ")
+    const bookmarkTask = await ask("Do you want to 'edit', 'list', 'delete', or 'open' bookmarks? (type what's between brackets): ")
     if (bookmarkTask === "edit") {
         await bookmarkEdit();
         return;
     }
     else if (bookmarkTask === "list") {
         await bookmarkList();
+        return;
+    }
+    else if (bookmarkTask === "delete") {
+        await bookmarkDelete();
         return;
     }
     else if (bookmarkTask === "open") {
@@ -388,6 +404,42 @@ async function bookmarkList() {
     createPrompt();
 }
 
+async function bookmarkDelete() {
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || {};
+
+    const keys = Object.keys(bookmarks);
+
+    if (keys.length === 0) {
+        await ask("You don't have any bookmarks.");
+        createPrompt();
+        return;
+    }
+
+    let output = "Bookmarks:\n";
+
+    keys.forEach((key, index) => {
+        output += `${index + 1}. ${bookmarks[key].name}\n`;
+    });
+
+    const answer = await ask(output + "\nWhich bookmark do you want to delete? ");
+
+    const choice = Number(answer);
+
+    if (choice < 1 || choice > keys.length || !Number.isInteger(choice)) {
+        await ask("Invalid bookmark.");
+        createPrompt();
+        return;
+    }
+
+    const bookmarkName = keys[choice - 1];
+
+    delete bookmarks[bookmarkName];
+
+    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+
+    await ask(`Bookmark "${bookmarkName}" deleted.`);
+    createPrompt();
+}
 
 async function bookmarkUse() {
     const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || {};
