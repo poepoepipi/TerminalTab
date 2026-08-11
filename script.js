@@ -217,6 +217,7 @@ Search Engine = ${searchEngine}
 
 createPrompt();
 
+// helper functions
 function ask(question) {
     return new Promise((resolve) => {
         if (question) {
@@ -244,6 +245,13 @@ function ask(question) {
             resolve(value);
         });
     });
+}
+
+function print(text) {
+    const output = document.createElement("div");
+    output.style.whiteSpace = "pre-line";
+    output.textContent = text;
+    terminal.appendChild(output);
 }
 
 
@@ -349,7 +357,7 @@ async function bookmark() {
         return;
     }
     else {
-        await ask(`Unknown option "${bookmarkTask}".`);
+        print(`Unknown option "${bookmarkTask}".`);
         createPrompt();
         return;
     }
@@ -361,10 +369,7 @@ async function bookmarkEdit() {
     const url = await ask("What is the URL? ");
 
     if (!name || !url) {
-        await ask("Bookmark name and URL cannot be empty.");
-        const output = document.createElement("div");
-        output.innerHTML = `Bookmark name and URL cannot be empty.`;
-        terminal.appendChild(output);
+        print("Bookmark name and URL cannot be empty.");
         createPrompt();
         return;
     }
@@ -378,29 +383,27 @@ async function bookmarkEdit() {
 
     localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
 
-    await ask(`Bookmark "${name}" saved.`);
+    print(`Bookmark "${name}" saved.`);
     createPrompt();
 }
 
 
 async function bookmarkList() {
     const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || {};
-
     const keys = Object.keys(bookmarks);
 
     if (keys.length === 0) {
-        await ask("You don't have any bookmarks.");
+        print("You don't have any bookmarks.");
         createPrompt();
         return;
     }
 
     let output = "Bookmarks:\n";
-
     keys.forEach((key, index) => {
         output += `${index + 1}. ${bookmarks[key].name} - ${bookmarks[key].url}\n`;
     });
 
-    await ask(output);
+    print(output);
     createPrompt();
 }
 
@@ -410,7 +413,7 @@ async function bookmarkDelete() {
     const keys = Object.keys(bookmarks);
 
     if (keys.length === 0) {
-        await ask("You don't have any bookmarks.");
+        print("You don't have any bookmarks.");
         createPrompt();
         return;
     }
@@ -426,7 +429,7 @@ async function bookmarkDelete() {
     const choice = Number(answer);
 
     if (choice < 1 || choice > keys.length || !Number.isInteger(choice)) {
-        await ask("Invalid bookmark.");
+        print("Invalid bookmark.");
         createPrompt();
         return;
     }
@@ -437,7 +440,7 @@ async function bookmarkDelete() {
 
     localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
 
-    await ask(`Bookmark "${bookmarkName}" deleted.`);
+    print(`Bookmark "${bookmarkName}" deleted.`);
     createPrompt();
 }
 
@@ -447,7 +450,7 @@ async function bookmarkUse() {
     const keys = Object.keys(bookmarks);
 
     if (keys.length === 0) {
-        await ask("You don't have any bookmarks.");
+        print("You don't have any bookmarks.");
         createPrompt();
         return;
     }
@@ -463,7 +466,7 @@ async function bookmarkUse() {
     const bookmark = bookmarks[answer];
 
     if (!bookmark) {
-        await ask("Invalid bookmark.");
+        print("Invalid bookmark.");
         createPrompt();
         return;
     }
