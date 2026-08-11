@@ -353,7 +353,7 @@ async function setup() {
 }
 
 async function promptSearch() {
-    const query = await ask("What do you want to search?: ");
+    const query = await ask("What do you want to search?");
     performSearch(query);
 }
 
@@ -398,9 +398,9 @@ async function bookmark() {
 }
 
 async function bookmarkEdit() {
-    const name = await ask("What should the bookmark be called? ");
+    const name = await ask("What should the bookmark be called?");
 
-    const url = await ask("What is the URL? ");
+    const url = await ask("What is the URL?");
 
     if (!name || !url) {
         print("Bookmark name and URL cannot be empty.");
@@ -495,7 +495,7 @@ async function bookmarkUse() {
         output += `- ${bookmarks[key].name}\n`;
     });
 
-    const answer = await ask(output + "\nWhich bookmark do you want to use? ");
+    const answer = await ask(output + "\nWhich bookmark do you want to use? (Type it's name)");
 
     const bookmark = bookmarks[answer];
 
