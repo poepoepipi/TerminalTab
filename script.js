@@ -6,6 +6,8 @@ new MutationObserver(() => {
 
 const bookmarks = localStorage.getItem("bookmarks");
 
+const commandHistory = [];
+
 let name = localStorage.getItem("name") || "user";
 let browser = localStorage.getItem("browser") || "Chrome";
 let searchEngine = localStorage.getItem("searchEngine") || "DuckDuckGo";
@@ -48,10 +50,38 @@ function createPrompt() {
 
     input.focus();
 
+    let historyIndex = commandHistory.length;
+
     input.addEventListener("keydown", async function (event) {
+        if (event.key === "ArrowUp") {
+            event.preventDefault();
+            if (commandHistory.length === 0) return;
+            if (historyIndex > 0) historyIndex--;
+            input.value = commandHistory[historyIndex];
+            moveCursorToEnd(input);
+            return;
+        }
+
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+            if (historyIndex < commandHistory.length - 1) {
+                historyIndex++;
+                input.value = commandHistory[historyIndex];
+            } else {
+                historyIndex = commandHistory.length;
+                input.value = "";
+            }
+            moveCursorToEnd(input);
+            return;
+        }
+
         if (event.key !== "Enter") return;
 
         const command = input.value.trim().toLowerCase();
+
+        if (input.value.trim() !== "") {
+            commandHistory.push(input.value.trim());
+        }
 
         input.disabled = true;
 
@@ -252,6 +282,10 @@ function print(text) {
     output.style.whiteSpace = "pre-line";
     output.textContent = text;
     terminal.appendChild(output);
+}
+
+function moveCursorToEnd(input) {
+    input.setSelectionRange(input.value.length, input.value.length);
 }
 
 
