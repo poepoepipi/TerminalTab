@@ -219,15 +219,15 @@ createPrompt();
 
 function ask(question) {
     return new Promise((resolve) => {
-        const prompt = document.createElement("div");
-        prompt.className = "prompt";
-
         if (question) {
             const label = document.createElement("div");
             label.textContent = question;
             label.style.whiteSpace = "pre-line";
-            prompt.appendChild(label);
+            terminal.appendChild(label);
         }
+
+        const prompt = document.createElement("div");
+        prompt.className = "prompt";
 
         const input = document.createElement("input");
         input.type = "text";
@@ -331,8 +331,8 @@ function performSearch(query) {
 
 async function bookmark() {
     const bookmarks = localStorage.getItem("bookmarks");
-    const bookmarkTask = await ask("Do you want to 'edit', 'list', 'delete', or 'open' bookmarks? (type what's between brackets): ")
-    if (bookmarkTask === "edit") {
+    const bookmarkTask = await ask("Do you want to 'add', 'list', 'delete', or 'open' bookmarks? (type what's between brackets): ")
+    if (bookmarkTask === "add") {
         await bookmarkEdit();
         return;
     }
