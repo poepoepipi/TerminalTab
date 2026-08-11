@@ -258,7 +258,7 @@ function ask(question) {
         }
 
         const prompt = document.createElement("div");
-        prompt.className = "prompt";
+        prompt.className = "prompt answer";
 
         const input = document.createElement("input");
         input.type = "text";

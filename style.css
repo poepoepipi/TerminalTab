@@ -19,6 +19,11 @@ body {
     content: var(--username) "@terminaltab:~$ ";
 }
 
+.prompt.answer::before {
+    content: "> ";
+    color: #00ff00;
+}
+
 input {
     background: transparent;
     border: none;
